@@ -1,4 +1,4 @@
-# For Windows - Delete repetitive part of files' name in a folder, do not include the suffix (eg: .txt)
+# For Windows - Delete repetitive part of filenames in a folder, do not include the suffix (eg: .txt) when deleting
 
 import os, re
 from pathlib import Path
