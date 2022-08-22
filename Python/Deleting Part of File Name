@@ -1,0 +1,51 @@
+# For Windows - Delete repetitive part of files' name in a folder, do not include the suffix (eg: .txt)
+
+import os, re
+from pathlib import Path
+import pyinputplus as pyip
+
+
+def natural_sort(l):
+    convert = lambda text: int(text) if text.isdigit() else text.lower()
+    alphanum_key = lambda key: [convert(c) for c in re.split('([0-9]+)', key)]
+    return sorted(l, key=alphanum_key)
+
+
+folderPath = Path(pyip.inputStr(prompt='Where is the folder located:\n'))
+
+
+# List all the files in the folder for convenient
+print("\nThis is all the files in this folder:\n")
+for folder, subfolders, files in os.walk(folderPath):
+    for file in natural_sort(files):
+        print(file)
+
+
+while True:
+    partDelete = pyip.inputStr(prompt='\nWhich part you want to be deleted?\n')
+
+    for folder, subfolders, files in os.walk(folderPath):
+        for file in natural_sort(files):
+            # Removing suffix to strip names of white space on left and right if they have any
+            fileNameSuffix = Path(file).suffix
+            fileNameNoSuffix = str(file).replace(fileNameSuffix, '')
+
+            # Creating new name, deleting the chosen file name part, stripping white space and add suffix in again
+            newFileName = str(fileNameNoSuffix).replace(partDelete, '')
+            newFileName = newFileName.strip() + fileNameSuffix
+
+            # Creating a full file paths from file names
+            filePath = Path(os.path.join(folder, file))
+            newFilePath = Path(os.path.join(folder, newFileName))
+
+            # Renaming files into new names
+            print(f'Renaming {file} --> {newFileName}')
+            os.rename(filePath, newFilePath)
+
+    # Ask if you want to delete more from the same folder
+    repeatAgain = pyip.inputYesNo(prompt='\nIs there any more part you want to delete?\n')
+    if repeatAgain == 'yes':
+        continue
+    else:
+        print("\nQuitting the program.")
+        break
