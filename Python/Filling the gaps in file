@@ -1,0 +1,37 @@
+#Filling gap between the file Eg: file01.txt file 03.txt (file03 will rename into file02)
+
+import os, shutil, re
+from pathlib import Path
+import pyinputplus as pyip
+
+
+def natural_sort(l):
+    convert = lambda text: int(text) if text.isdigit() else text.lower()
+    alphanum_key = lambda key: [convert(c) for c in re.split('([0-9]+)', key)]
+    return sorted(l, key=alphanum_key)
+
+
+number = 1
+folderPath = Path(pyip.inputStr(prompt='Where is the folder located:\n'))
+prefix = pyip.inputStr(prompt='What is the file prefix?\n')
+
+fileRegex = re.compile(rf'''^({prefix})(\s*)
+                            (\d*)$''', re.VERBOSE)
+
+for folder, subfolders, files in os.walk(folderPath):
+    for file in natural_sort(files):
+        # Looking for the right file with the same prefix
+        filePath = Path(os.path.join(folder, file))
+        fileBaseName = filePath.stem
+        foundFile = fileRegex.search(fileBaseName)
+        if foundFile is None:
+            continue
+
+        # Changing the number
+        newFileName = Path(foundFile.group(1) + foundFile.group(2) + str(number) + filePath.suffix)
+        newFileNamePath = os.path.join(folder, newFileName)
+
+        # Changing file name
+        print(f'Changing {file} into {newFileName}...')
+        shutil.move(filePath, newFileNamePath)
+        number += 1
