@@ -1,4 +1,4 @@
-#Filling gap between the file Eg: file01.txt file 03.txt (file03 will rename into file02)
+#Filling gap between the filenames Eg: file01.txt file 03.txt (file03 will rename into file02)
 
 import os, shutil, re
 from pathlib import Path
