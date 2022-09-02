@@ -1,0 +1,41 @@
+# This program will create a table of NxN in Excel
+
+import sys, openpyxl, pyinputplus
+from openpyxl.styles import Font
+from openpyxl.utils import get_column_letter, column_index_from_string
+
+# Prompt user to input the number N for the table
+n = pyinputplus.inputInt(prompt="Enter the multiplication number:\n")
+
+# Create Excel workbook and select the active sheet
+wb = openpyxl.Workbook()
+sheet = wb.active
+
+# Create the left and top number in bold
+for num in range(1, n+1):
+    rowCell = sheet.cell(row=num+1, column=1)
+    rowCell.value = num
+    rowCell.font = Font(bold=True)
+
+    columnCell = sheet.cell(row=1, column=num+1)
+    columnCell.value = num
+    columnCell.font = Font(bold=True)
+
+# Get the multiplication area coordinate
+multiplyRightCorner = str(get_column_letter(sheet.max_column) + str(sheet.max_row))
+multiplyLeftCorner = 'B2'
+
+# Multiplying
+for rowOfMultiply in sheet[multiplyLeftCorner: multiplyRightCorner]:
+    for cellOfMultiply in rowOfMultiply:
+        # Getting the number to multiply
+        cellOfMultiplyLeftNum = 'A' + str(cellOfMultiply.row)
+        cellOfMultiplyTopNum = str(get_column_letter(cellOfMultiply.column)) + '1'
+
+        cellOfMultiply.value = f'={cellOfMultiplyLeftNum}*{cellOfMultiplyTopNum}'
+
+# Freeze column A and row 1
+sheet.freeze_panes = 'B2'
+
+wb.save(f'{str(n)} Multiplication Table.xlsx')
+print(f'{str(n)} Multiplication Table.xlsx have been created')
