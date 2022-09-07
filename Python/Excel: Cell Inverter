@@ -1,0 +1,34 @@
+# Change the placement of x and y cells in an Excel file
+
+import openpyxl, pyinputplus
+from openpyxl.utils import get_column_letter, column_index_from_string
+
+convertFile = pyinputplus.inputStr(prompt='Enter the file you want to convert:\n')
+wb = openpyxl.load_workbook(convertFile)
+wbInvert = openpyxl.Workbook()
+
+# Loop through all the sheets
+for sheetNum in range(0, len(wb.worksheets)):
+    sheet = wb.worksheets[sheetNum]
+    wbInvert.create_sheet(sheet.title, sheetNum)
+
+    sheetInvert = wbInvert.worksheets[sheetNum]
+
+    # Create the most bottom right cell coordinate
+    maximumCell = f'{get_column_letter(sheet.max_column)}{sheet.max_row}'
+
+    # Loop through all the cell and convert them
+    for cellRow in sheet['A1':maximumCell]:
+        for cell in cellRow:
+            xInvert = cell.column
+            yInvert = cell.row
+
+            cellInvert = sheetInvert.cell(row=xInvert, column=yInvert)
+            cellInvert.value = cell.value
+
+# Delete the already created default file (which is the last sheet)
+del wbInvert[wbInvert.worksheets[len(wbInvert.worksheets) - 1].title]
+
+# Save as new file
+wbInvert.save('FileConverted.xlsx')
+print(f'{wbInvert.sheetnames} have been created in FileConverted.xlsx')
