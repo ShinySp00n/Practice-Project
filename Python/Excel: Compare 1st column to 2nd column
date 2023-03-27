@@ -27,7 +27,6 @@ for cellRow in sheet['B1':'B'+str(sheet.max_row)]:
 result = sorted(list(set(columnAList) - set(columnBList)))
 
 # Write result to a new column
-count = 0
 for cellRow in sheet['C1':'C'+str(len(result))]:
     for cell in cellRow:
         cell.value = result[cell.row - 1]
