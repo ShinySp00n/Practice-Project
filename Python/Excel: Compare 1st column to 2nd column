@@ -1,0 +1,38 @@
+# Compare 1st column to 2nd column to find missing values
+
+import openpyxl, pyinputplus
+from openpyxl.utils import get_column_letter, column_index_from_string
+
+columnAList = []
+columnBList = []
+
+# compareFile = pyinputplus.inputStr(prompt='Enter the file you want the column to be matched:\n')
+wb = openpyxl.load_workbook('FileCompare.xlsx')
+
+sheet = wb.worksheets[0]
+
+# Put cell value in column A to columnAList
+for cellRow in sheet["A1":'A'+str(sheet.max_row)]:
+    for cell in cellRow:
+        if cell.value is not None:
+            columnAList.append(cell.value)
+
+# Put cell value in column B to columnBList
+for cellRow in sheet['B1':'B'+str(sheet.max_row)]:
+    for cell in cellRow:
+        if cell.value is not None:
+            columnBList.append(cell.value)
+
+# Compare 2 columns and calculate the result list
+result = sorted(list(set(columnAList) - set(columnBList)))
+
+# Write result to a new column
+count = 0
+for cellRow in sheet['C1':'C'+str(len(result))]:
+    for cell in cellRow:
+        cell.value = result[cell.row - 1]
+        print(cell.value)
+
+# Update file
+wb.save('FileCompare.xlsx')
+print('New column has been written\nFileCompare.xlsx had been updated')
