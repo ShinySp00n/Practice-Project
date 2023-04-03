@@ -6,8 +6,8 @@ from openpyxl.utils import get_column_letter, column_index_from_string
 columnAList = []
 columnBList = []
 
-# compareFile = pyinputplus.inputStr(prompt='Enter the file you want the column to be matched:\n')
-wb = openpyxl.load_workbook('FileCompare.xlsx')
+compareFile = pyinputplus.inputStr(prompt='Enter the file you want the column to be compared:\n')
+wb = openpyxl.load_workbook(compareFile)
 
 sheet = wb.worksheets[0]
 
@@ -33,5 +33,5 @@ for cellRow in sheet['C1':'C'+str(len(result))]:
         print(cell.value)
 
 # Update file
-wb.save('FileCompare.xlsx')
-print('New column has been written\nFileCompare.xlsx had been updated')
+wb.save(compareFile)
+print(f'New column has been written\n{compareFile} had been updated')
